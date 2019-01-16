@@ -2,7 +2,7 @@
 /**
  *https请求类---------可实现普通http请求与https携带证书验证请求
  *@author TaurusK
- *@version 1.0
+ *@version 1.2
  *@date 2019-01-05 19:55:36
  */
 class Khttps {
@@ -36,7 +36,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -77,7 +80,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -128,7 +134,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -175,7 +184,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -225,7 +237,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -284,7 +299,10 @@ class Khttps {
 		// 检查是否有错误发生
 		if($i = curl_errno($ch))
 		{
-		    $result = 'request error['.$i.']: ' . curl_error($ch);
+		    $result = [
+		    	'errno' => $i,
+		    	'info'    => 'request error['.$i.']: ' . curl_error($ch)
+		    ];
 		}
 
 		//关闭cURL资源，并且释放系统资源
@@ -300,7 +318,7 @@ class Khttps {
 	 * @param  [array] $data [请求数据]
 	 * @return [string]       [组装后的请求地址]
 	 */
-	protected function getRequestDataRegroup($url,$data){
+	public function getRequestDataRegroup($url,$data){
 		if(!empty($data) && is_array($data)){
 			$url .= '?';
 			$count = 1;
@@ -310,6 +328,30 @@ class Khttps {
 					$count++;
 				}else{
 					$url .= '&'.$k .'='. $v;
+				}
+				
+			}
+		}
+
+		return $url;
+	}
+	
+	/**
+	 * [getRequestDataRegroup get请求数据内容组装-url参数编码版]
+	 * @param  [string] $url  [请求地址]
+	 * @param  [array] $data [请求数据]
+	 * @return [string]       [组装后的请求地址]
+	 */
+	public function getRequestDataRegroup_encode($url,$data){
+		if(!empty($data) && is_array($data)){
+			$url .= '?';
+			$count = 1;
+			foreach($data as $k => $v){
+				if($count == 1){
+					$url .= $k .'='. urlencode($v);
+					$count++;
+				}else{
+					$url .= '&'.$k .'='. urlencode($v);
 				}
 				
 			}
