@@ -1,4 +1,29 @@
 # Khttps
+
+## 重要更新
+
+2019/02/20-----------------------------v2.0
+
+去掉了所有post请求中的$httpHeader参数并优化了代码
+
+新增了设置自定义选项参数方法setOption，此方法有两个参数$option和$option_is_perpetual
+
+示例：
+
+```php
+$https = new Khttps();
+//$option              [必选] 要设置的选项值，必须是个数组
+//$option_is_perpetual [可选] 设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
+$https->setOption([
+	CURLOPT_HTTPHEADER => ["Content-Type:text/xml; charset=utf-8"]
+]);
+$res = $https->send_get('http://shop.tutushequ.com/',['a'=>'1']);
+```
+
+
+
+## 快速使用
+
 php https请求类-------------------------可实现普通http请求与https携带证书验证请求
 
 方法列表以请求方式分两类：
@@ -56,23 +81,21 @@ send_get_ssl($url,$pem,$key,$data='',$verify=false,$header=false,$returntransfer
 * [send_post 普通post请求]
 * @param  string  $url            [必选]请求地址
 * @param  mixed   $data           [可选]请求数据
-* @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 * @param  boolean $header         [可选]是否输出头信息
 * @param  boolean $returntransfer [可选]是否将请求结果返回
 * @return string                  [请求结果]
 */
-send_post($url,$data='',$httpHeader='',$header=false,$returntransfer=true)
+send_post($url,$data='',$header=false,$returntransfer=true)
     
 /**
 * [send_post https 不带证书post请求]
 * @param  string  $url            [必选]请求地址
 * @param  mixed   $data           [可选]请求数据
-* @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 * @param  boolean $header         [可选]是否输出头信息
 * @param  boolean $returntransfer [可选]是否将请求结果返回
 * @return mixed                   请求结果
 */
-send_post_not_ssl($url,$data='',$httpHeader='',$header=false,$returntransfer=true)
+send_post_not_ssl($url,$data='',$header=false,$returntransfer=true)
 
 /**
 * [send_post_ssl https 带证书post请求]
@@ -80,13 +103,12 @@ send_post_not_ssl($url,$data='',$httpHeader='',$header=false,$returntransfer=tru
 * @param  string  $pem            [必选]证书路径 如：/xxx目录/client_504569.crt'; 注意目录和文件的可读权限
 * @param  string  $key            [必选]证书密钥路径 如'/xxx目录//client_504569.key'; 注意目录和文件的可读权限
 * @param  mixed   $data           [可选]请求数据
-* @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 * @param  boolean $verify         [可选]是否验证携带的证书
 * @param  boolean $header         [可选]是否输出头信息
 * @param  boolean $returntransfer [可选]是否将请求结果返回
 * @return mixed                   请求结果
 */
-send_post_ssl($url,$pem,$key,$data='',$httpHeader='',$verify=false,$header=false,$returntransfer=true)
+send_post_ssl($url,$pem,$key,$data='',$verify=false,$header=false,$returntransfer=true)
 
 ```
 
@@ -117,4 +139,15 @@ echo $res;
 *http://www.baidu.com/?id=1&title=哈哈&page=6 这种形式
 *这种自动拼接参数的功能只有get方式才有，因为post请求可以直接将构建好的参数直接发送，而不需要拼接
 *成链接的形式
+*/
+
+
+//还可以设置自定义选项
+$https = new Khttps();
+//$option              [必选] 要设置的选项值，必须是个数组
+//$option_is_perpetual [可选] 设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
+$https->setOption([
+	CURLOPT_HTTPHEADER => ["Content-Type:text/xml; charset=utf-8"]
+]);
+$res = $https->send_get('http://shop.tutushequ.com/',['a'=>'1']);
 ```

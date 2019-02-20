@@ -2,10 +2,15 @@
 /**
  *https请求类---------可实现普通http请求与https携带证书验证请求
  *@author TaurusK
- *@version 1.2
+ *@version 2.0
  *@date 2019-01-05 19:55:36
+ *@update 2019-02-20 11:26:30
  */
 class Khttps {
+
+	private $option;                //自定义选项
+	private $option_is_perpetual;   //设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
+
 
 	/*
 	 * 普通get请求
@@ -22,11 +27,13 @@ class Khttps {
 		curl_setopt($ch, CURLOPT_HEADER, $header);
 		//不直接输出内容
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, $returntransfer);
+
+		//选项设置处理
+		$this->setOptionDispose($ch);
 		
 		//判断$data是否为空，不为空且为数据则组合请求数据
 		$url = $this->getRequestDataRegroup($url,$data);
 
-		//halt($url);
 		//设置请求url
 		curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -63,11 +70,13 @@ class Khttps {
 		curl_setopt($ch, CURLOPT_HEADER, $header);
 		//不直接输出内容
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, $returntransfer);
+
+		//选项设置处理
+		$this->setOptionDispose($ch);
 		
 		//判断$data是否为空，不为空且为数据则组合请求数据
 		$url = $this->getRequestDataRegroup($url,$data);
 
-		//halt($url);
 		//设置请求url
 		curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -111,6 +120,9 @@ class Khttps {
 	    $params[CURLOPT_HEADER] = $header; //是否返回响应头信息
 	    $params[CURLOPT_RETURNTRANSFER] = $returntransfer; //是否将结果返回
 	    $params[CURLOPT_FOLLOWLOCATION] = true; //是否重定向
+
+	    //选项设置处理
+		$this->setOptionDispose($ch);
 	    
 	    //判断$data是否为空，不为空且为数据则组合请求数据
 		$url = $this->getRequestDataRegroup($url,$data);
@@ -151,12 +163,11 @@ class Khttps {
 	 * [send_post 普通post请求]
 	 * @param  string  $url            [必选]请求地址
 	 * @param  mixed   $data           [可选]请求数据
-	 * @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 	 * @param  boolean $header         [可选]是否输出头信息
 	 * @param  boolean $returntransfer [可选]是否将请求结果返回
 	 * @return string                  [请求结果]
 	 */
-	public function send_post($url,$data='',$httpHeader='',$header=false,$returntransfer=true){
+	public function send_post($url,$data='',$header=false,$returntransfer=true){
 		//初始化一个curl会话
 		$ch = curl_init();
 		//请求地址
@@ -170,12 +181,8 @@ class Khttps {
 		//设置全部数据以post提交
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
-		//判断是否有设置请求报文格式，如：xml报文格式
-		if($httpHeader == 'xml'){
-	        //设置请求头
-	        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type:application/xml; charset=utf-8"));
-    	}
-		
+		//选项设置处理
+		$this->setOptionDispose($ch);
 
 		
 		// 执行
@@ -201,12 +208,11 @@ class Khttps {
 	 * [send_post https 不带证书post请求]
 	 * @param  string  $url            [必选]请求地址
 	 * @param  mixed   $data           [可选]请求数据
-	 * @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 	 * @param  boolean $header         [可选]是否输出头信息
 	 * @param  boolean $returntransfer [可选]是否将请求结果返回
 	 * @return mixed                   请求结果
 	 */
-	public function send_post_not_ssl($url,$data='',$httpHeader='',$header=false,$returntransfer=true){
+	public function send_post_not_ssl($url,$data='',$header=false,$returntransfer=true){
 		//初始化一个curl会话
 		$ch = curl_init();
 		//请求地址
@@ -220,11 +226,8 @@ class Khttps {
 		//设置全部数据以post提交
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
-		//判断是否有设置请求报文格式，如：xml报文格式
-		if($httpHeader == 'xml'){
-	        //设置请求头
-	        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type:application/xml; charset=utf-8"));
-    	}
+		//选项设置处理
+		$this->setOptionDispose($ch);
 
 		
     	//下面的设置很重要===============SSL请求设置=========================================
@@ -256,13 +259,12 @@ class Khttps {
 	 * @param  string  $pem            [必选]证书路径 如：/xxx目录/client_504569.crt'; 注意目录和文件的可读权限
 	 * @param  string  $key            [必选]证书密钥路径 如'/xxx目录//client_504569.key'; 注意目录和文件的可读权限
 	 * @param  mixed   $data           [可选]请求数据
-	 * @param  string  $httpHeader     [可选]请求报文格式如：xml,json等
 	 * @param  boolean $verify         [可选]是否验证携带的证书
 	 * @param  boolean $header         [可选]是否输出头信息
 	 * @param  boolean $returntransfer [可选]是否将请求结果返回
 	 * @return mixed                   请求结果
 	 */
-	public function send_post_ssl($url,$pem,$key,$data='',$httpHeader='',$verify=false,$header=false,$returntransfer=true){
+	public function send_post_ssl($url,$pem,$key,$data='',$verify=false,$header=false,$returntransfer=true){
 		//初始化一个curl会话
 		$ch = curl_init();
 		
@@ -272,13 +274,9 @@ class Khttps {
 		$params[CURLOPT_FOLLOWLOCATION] = true;              //是否重定向
 		$params[CURLOPT_POST] = 1;                           //设置post方式提交
 		$params[CURLOPT_POSTFIELDS] = $data;                 //设置全部数据以post提交 
-		
 
-		//判断是否有设置请求报文格式，如：xml报文格式
-		if($httpHeader == 'xml'){
-	        //设置请求头
-	        $params[CURLOPT_HTTPHEADER] = Array("Content-Type:application/xml; charset=utf-8");
-    	}
+		//选项设置处理
+		$this->setOptionDispose($ch);
 
 		
     	//下面的设置很重要===============SSL请求设置=======================================================
@@ -358,5 +356,40 @@ class Khttps {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * [setOption 设置自定义选项]
+	 * @param [array] $option              [必选] 要设置的选项值，必须是个数组
+	 * @param [array] $option_is_perpetual [可选] 设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
+	 * 如：$https->setOption([
+	 *		CURLOPT_HTTPHEADER => ["Content-Type:text/xml; charset=utf-8"]
+	 *	]);
+	 *	参数数组的键值必须是个curl设置的常量
+	 */
+	public function setOption($option,$option_is_perpetual=false){
+		if(is_array($option)){
+			$this->option = $option;
+			$this->option_is_perpetual = $option_is_perpetual;
+		}else{
+			throw new \Exception("parameter error:option need is array");
+		}
+		
+	}
+
+	/**
+	 * [setOptionDispose 自定义选项设置处理]
+	 * @param [array] $ch              [必选] 一个curl资源
+	 */
+	private function setOptionDispose($ch){
+		//设置选项
+		if(is_array($this->option)){
+			curl_setopt_array($ch, $this->option); //批量设置选项
+		}
+
+		//是否持久保存设置的选项
+		if($this->option_is_perpetual === false){
+			$this->option = '';
+		}
 	}
 }
