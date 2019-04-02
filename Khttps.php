@@ -2,9 +2,9 @@
 /**
  *https请求类---------可实现普通http请求与https携带证书验证请求
  *@author TaurusK
- *@version 2.0
+ *@version 2.1
  *@date 2019-01-05 19:55:36
- *@update 2019-02-20 11:26:30
+ *@update 2019-04-02 15:18:30
  */
 class Khttps {
 
