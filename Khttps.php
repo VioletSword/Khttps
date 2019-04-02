@@ -392,4 +392,16 @@ class Khttps {
 			$this->option = '';
 		}
 	}
+	
+	/**
+	 * 单例
+	 */
+	public static function singleObject(){
+		if(self::$https === null){
+			self::$https = new self();
+			return self::$https;
+		}else{
+			return self::$https;
+		}
+	}
 }
