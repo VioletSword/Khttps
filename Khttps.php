@@ -8,6 +8,7 @@
  */
 class Khttps {
 
+	private static $https = null;   //保存单例对象
 	private $option;                //自定义选项
 	private $option_is_perpetual;   //设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
 
