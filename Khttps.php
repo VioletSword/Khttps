@@ -2,15 +2,16 @@
 /**
  *https请求类---------可实现普通http请求与https携带证书验证请求
  *@author TaurusK
- *@version 2.1.1
- *@date 2019-01-05 19:55:36
- *@update 2019-04-02 15:18:30
+ *@version 2.1.2
+ *@date 2019-01-05
+ *@update 2019-05-08
  */
 class Khttps {
 
 	private static $https = null;   //保存单例对象
 	private $option;                //自定义选项
 	private $option_is_perpetual;   //设置的选项是否在实例生命周期内有效，默认为设置的第一次有效
+	public  $runtime;               //记录请求耗时
 
 
 	/*
@@ -21,6 +22,7 @@ class Khttps {
 	 * boolean $returntransfer[可选]   是否直接输出内容
 	 */
 	public function send_get($url,$data='',$header=false,$returntransfer=true){
+		$t1 = microtime(true);
 		
 		//初始化一个curl会话
 		$ch = curl_init();
@@ -52,7 +54,9 @@ class Khttps {
 
 		//关闭cURL资源，并且释放系统资源
 		curl_close($ch);
-		
+
+		$t2 = microtime(true);
+		$this->runtime = '耗时'.round($t2-$t1,3).'s';
 		return $result;
 	}
 
