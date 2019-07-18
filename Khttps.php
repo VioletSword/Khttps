@@ -87,6 +87,7 @@ class Khttps {
 
 		//下面的设置很重要===============SSL请求设置=========================================
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   //【重要设置】此设置表示无论我方有没有携带证书，都跳过证书验证
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);   //【重要设置】不验证证书对应的目标主机
 
 		// 执行
 		$result = curl_exec($ch);
@@ -237,6 +238,7 @@ class Khttps {
 		
     	//下面的设置很重要===============SSL请求设置=========================================
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   //【重要设置】此设置表示无论我方有没有携带证书，都跳过证书验证
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);   //【重要设置】不验证证书对应的目标主机
 
 		
 		// 执行
